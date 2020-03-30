@@ -1,0 +1,20 @@
+# Use these commands to manually run the Docker containers instead of using docker-compose
+
+docker build -t kong-node-app .
+
+docker network create kong-net
+
+docker run --name kong-db --network=kong-net -e "POSTGRES_USER=kong" -e "POSTGRES_DB=kong" -e "POSTGRES_PASSWORD=kong" -d postgres:latest
+
+docker run --rm `
+--network=kong-net `
+-e "KONG_DATABASE=postgres" `
+-e "KONG_PG_HOST=kong-db" `
+-e "KONG_PG_PASSWORD=kong" `
+kong:latest kong migrations bootstrap
+
+docker run -d --name kong-api --network=kong-net -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=kong-db" -e "KONG_PG_PASSWORD=kong" -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" -p 8000:8000 -p 127.0.0.1:8001:8001 kong:latest
+
+docker run --name kong-app --network=kong-net -d trevor/kong-node-app
+
+docker logs kong-app
