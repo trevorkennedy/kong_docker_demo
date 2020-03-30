@@ -119,7 +119,7 @@ curl http://localhost:8000 --header 'Host: time-service' --header "apikey: Hello
 
 You have now added key-based authorization and rate limiting to a microservice without writing a single line of code.
 
-![The Kong Way](Kong Way.png)
+![The Kong Way](Kong%20Way.png)
 
 ## Clean Up
 
